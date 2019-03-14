@@ -70,26 +70,24 @@ def voraz(array, minimos, presup):
 			#Evitamos que se salga del rango
 			if int(len(lista)) > int(i):
 				elem = lista[i]
-			else:
-				lon = int(len(lista))
-				print(lon)
-				#elem = lista[(i-lon)]
-			print(elem[0])
+				try:
+					if minimos[elem[0]] == 0:
+						continue
+				except:
+					print("Categoria no encontrada: {}".format(elem[0]))
 			#realizamos compra
 			try:
 				valor = float(elem[2])
 				if float(valor) < float(presup):
 					presup -= valor
 					try:
-						lista_compras[elem[1]] += minimos[elem[0]]						
-						val = lista_compras[elem[1]]
+						lista_compras[elem[1]] += 1
+						minimos[elem[0]] -= 1						
 					except:
-						lista_compras[elem[1]] = minimos[elem[0]]
-						val = lista_compras[elem[1]]
-					#break						
+						lista_compras[elem[1]] = 1										
+						minimos[elem[0]] -= 1
 				else:
 					compra_realizada = True
-				#sprint(presup)
 			except:
 				print("Categoria no encontrada: {}".format(elem[0]))
 		i+=1
