@@ -59,16 +59,32 @@ def cargarDatos(archivo):
 
 	return array
 
-def voraz(array, minimos, presu):
-	for lista in array:
-		elem = lista[0]
-		nombre = elem[0]
-		print(nombre)
-	#if presup > 0
-		#while suma < presup	
-	 		#for minimos suma
-	 		#agrega en sol
-		#Retun sol
+def voraz(array, minimos, presup):
+	lista_compras = {}
+	compra_realizada = False
+	while(not compra_realizada):
+		for lista in array:
+			elem = lista[0]
+			print(elem[0])
+			try:
+				valor = float(elem[2])*float(minimos[elem[0]])
+				if float(valor) < float(presup):
+					presup -= valor
+					try:
+						lista_compras[elem[1]] += minimos[elem[0]]						
+						val = lista_compras[elem[1]]
+					except:
+						lista_compras[elem[1]] = minimos[elem[0]]
+						val = lista_compras[elem[1]]						
+				else:
+					compra_realizada = True
+				print(presup)
+			except:
+				print("Categoria no encontrada: {}".format(elem[0]))
 
-cargarDatos(archivo)
+	return lista_compras
+
+array = cargarDatos(archivo)
+compras = voraz(array, minimos, 300000)
+print(compras)
 		
