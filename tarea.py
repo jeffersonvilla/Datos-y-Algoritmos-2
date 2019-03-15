@@ -5,6 +5,10 @@ archivo = 'listacsv.csv'
 minimos = {"Proteina":8, "Harina":10, "Granos":3, "Aseo":4, 
 			"Aceite y salsa":3, "Vegetales":12}
 
+orden = {"Proteina": 16, "Vegetales":8, "Harina":4, "Aceite y salsa":2,
+	 "Granos":1, "Aseo":0, "Varios": 0, "Delicatese":0}
+
+
 def cargarDatos(archivo):
 
 	array = []
@@ -59,19 +63,22 @@ def cargarDatos(archivo):
 
 	return array
 
-def voraz(array, minimos, presup):
+def voraz(array, mini, presup):
 	lista_compras = {}
 	compra_realizada = False
 	i = 0
 	#mientras aun tengamos presupuesto
 	while(not compra_realizada):
 		#recorremos la lista de productos 
-		for lista in array:
+		for lista in array:			
 			#Evitamos que se salga del rango
 			if int(len(lista)) > int(i):
 				elem = lista[i]
+				print("\n")
+				print(elem)
+				print(mini)
 				try:
-					if minimos[elem[0]] == 0:
+					if mini[elem[0]] <= 0:
 						continue
 				except:
 					print("Categoria no encontrada: {}".format(elem[0]))
@@ -82,22 +89,82 @@ def voraz(array, minimos, presup):
 					presup -= valor
 					try:
 						lista_compras[elem[1]] += 1
-						minimos[elem[0]] -= 1						
+						mini[elem[0]] -= 1						
 					except:
 						lista_compras[elem[1]] = 1										
-						minimos[elem[0]] -= 1
+						mini[elem[0]] -= 1
 				else:
 					compra_realizada = True
 			except:
 				print("Categoria no encontrada: {}".format(elem[0]))
 		i+=1
 
-	print("Restan.. {}$".format(presup))
+	print("\nRestan.. {}$".format(presup))
+	return lista_compras
+
+def voraz2(array, minim, presup):
+	mini = minim
+	lista_compras = {}
+	compra_realizada = False
+	i = 0
+	#mientras aun tengamos presupuesto
+	while(not compra_realizada):
+		#recorremos la lista de productos 
+		for lista in array:			
+			#Evitamos que se salga del rango
+			if int(len(lista)) > int(i):
+				elem = lista[i]
+				#print("\n")
+				#print(elem)
+				#print(mini)
+				try:
+					if mini[elem[0]] <= 0:
+						continue
+				except:
+					print("Categoria no encontrada: {}".format(elem[0]))
+			#realizamos compra
+			if mini[elem[0]] > 0:
+				try:
+					valor = float(elem[2])
+					if float(valor) < float(presup):
+						presup -= valor
+						try:
+							lista_compras[elem[1]] += 1
+							mini[elem[0]] -= 1						
+						except:
+							lista_compras[elem[1]] = 1										
+							mini[elem[0]] -= 1
+					else:
+						compra_realizada = True
+				except:
+					print("Categoria no encontrada: {}".format(elem[0]))
+			#Aceptamos o rehacemos la lista de compras
+			suma = 0
+			for item in mini:
+				suma += mini[item]
+			if suma == 0 and presup > 20000:
+				mini = minim
+				for item in mini:
+					if mini[item] == 0:
+						mini[item] = 0
+					else:
+						mini[item] *= 2	
+			elif suma == 0:
+				compra_realizada = True
+		i+=1
+
+	print("\nRestan.. {}$".format(presup))
 	return lista_compras
 
 array = cargarDatos(archivo)
 compras = voraz(array, minimos, 300000)
-print("\n")
+#print("\n")
 for item in compras:
 	print("{} : {}".format(item, compras[item]))
-		
+
+compras = voraz2(array, orden, 200000)
+#print("\n")
+for item in compras:
+	print("{} : {}".format(item, compras[item]))
+
+
